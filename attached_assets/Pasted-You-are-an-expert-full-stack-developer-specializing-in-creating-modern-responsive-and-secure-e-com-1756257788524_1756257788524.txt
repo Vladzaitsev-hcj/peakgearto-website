@@ -1,0 +1,61 @@
+You are an expert full-stack developer specializing in creating modern, responsive, and secure e-commerce rental platforms. Your task is to build a complete, production-ready website for a sports equipment rental company called "Peak Gear TO".
+
+**Project Overview:**
+Create a website for renting roof-top cargo boxes and bike carriers to adventure-seekers and campers in the Greater Toronto Area. The business operates from a central warehouse in Brampton. The design must be minimalistic, clean, and simple with a straightforward tone.
+
+**Core Features & Functionality:**
+
+*   **Responsive Design:** Flawless functionality on desktop, tablet, and mobile.
+*   **User System:** Users can browse without an account. Must create an account (email & password) to book. Upon signing up, users must digitally sign a waiver of liability before their first booking. A user dashboard is required to view current and past bookings.
+*   **Product Catalog:**
+    *   Each product listing must include: multiple high-quality images, title, detailed description, specifications (dimensions, weight capacity, compatible car makes/models), daily rental rate, and a refundable security deposit amount.
+    *   Implement a filtering sidebar to filter products by: type (cargo box / bike carrier), price range, and car compatibility.
+    *   Include a search bar that searches product titles and descriptions.
+*   **Booking System:**
+    *   On the product page, integrate an interactive calendar (e.g., React Date Picker) for selecting rental start and end dates.
+    *   The calendar must visually indicate available and booked dates (prevent double-booking). Connect this to the backend inventory.
+    *   The system must automatically calculate the total cost: (daily rate * number of days) + deposit + delivery fee (if applicable).
+*   **Checkout & Payments:**
+    *   Integrate the **PayPal API** to handle secure checkout and payments.
+    *   At checkout, users must select a pickup method: *Pickup in Brampton (Free)* or *Delivery & Installation (Offer two tiers: Standard (within 20km): $49.99, Extended (20-50km): $89.99)*.
+    *   Upon successful payment, generate a PDF rental agreement that is emailed to the user and stored in the admin dashboard.
+*   **Admin Dashboard:** A protected route (/admin) for business owners.
+    *   Full CRUD (Create, Read, Update, Delete) functionality for product listings.
+    *   A table to view, filter, and manage all bookings (e.g., mark as fulfilled, canceled).
+    *   Ability to manually update product availability and view signed waivers/agreements.
+
+**Design & UX Guidelines:**
+
+*   **Design Inspiration:** Clean and functional like Airbnb or Patagonia. Use a card-based layout for products.
+*   **Color Scheme:** Primary color: Forest Green (#2E5E4E). Accent color: Sunny Orange (#FF9F1C). Background: White (#FFFFFF) and Light Grey (#F5F5F5). Text: Dark Grey (#333333).
+*   **Fonts:** Use the Google Fonts "Poppins" family for a clean, modern look.
+*   **Tone:** All text must be simple, straightforward, and helpful.
+*   **Key Pages:** Homepage, Products Page, Individual Product Pages, Signup/Login, User Dashboard, Admin Dashboard.
+*   **Homepage Sections:**
+    1.  Hero banner with a high-quality background image, the tagline "Gear Up for Your Next GTA Adventure", and a prominent "Browse Our Gear" button.
+    2.  A "How It Works" section with 4 steps (1. Browse Gear, 2. Book & Sign, 3. Adventure Awaits, 4. Easy Return) using simple icons.
+    3.  A section showcasing 3-4 "Featured Products".
+    4.  A short testimonials section with dummy quotes and names.
+    5.  A final call-to-action.
+
+**Technical Stack & Requirements:**
+
+*   **Frontend:** Build the client-side with **React** using **Vite**. Use **React Router** for navigation. Manage state effectively using React hooks. Use CSS Modules or Styled Components for styling.
+*   **Backend:** Build a **RESTful API** using **Node.js** and **Express.js**.
+*   **Database:** Use **SQLite** with the **Knex.js** query builder for development. Define clear schemas for: `Users`, `Products`, `Bookings`, `Waivers`.
+*   **Authentication:** Implement secure **JWT (JSON Web Tokens)** for user authentication.
+*   **PDF Generation:** Use a library like `pdfkit` or `jspdf` to generate the rental agreements and waivers.
+*   **File Structure:** Create a monorepo structure:
+    ```
+    project-root/
+    ├── client/          # React Vite app
+    ├── server/          # Node.js Express API
+    └── package.json     # Root package.json to run scripts for both
+    ```
+*   **Replit Setup:** Use `concurrently` in the root `package.json` to run both the client and server with a single command (`npm run dev`). Ensure all dependencies are correctly listed. Use Replit's built-in secrets (.env) management for sensitive data like PayPal API keys.
+
+**Content:**
+*   Generate realistic placeholder product data for 8-10 items (mix of roof boxes and bike carriers). Use placeholder images from Picsum.photos.
+*   Write all necessary UI text, button labels, and placeholder content for the "How It Works" and testimonials sections in a straightforward tone.
+
+Please begin by outlining the complete file structure. Then, build the backend API endpoints first (Products, Users, Auth, Bookings), followed by the React frontend components, ensuring they connect seamlessly. Prioritize core functionality (browsing, booking, checkout) before the admin dashboard.
