@@ -4,9 +4,11 @@ import { Link } from "wouter";
 export default function HeroSection() {
   return (
     <section className="relative h-screen flex items-center justify-center">
-      {/* Background Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/90 to-primary/70" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+      {/* Background Image */}
+      <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{backgroundImage: 'url(/images/hero-background.jpg)'}} />
+      {/* Background Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/80 via-primary/70 to-primary/60" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
       
       <div className="relative z-10 text-center text-white px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
