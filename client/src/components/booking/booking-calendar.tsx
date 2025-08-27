@@ -134,7 +134,7 @@ By digitally signing below, I acknowledge that I have read and understand this w
       return;
     }
 
-    if (!waiverStatus?.signed) {
+    if (!waiverStatus || !(waiverStatus as any)?.signed) {
       toast({
         title: "Waiver Required",
         description: "Please sign the waiver before making a booking.",
@@ -187,26 +187,26 @@ By digitally signing below, I acknowledge that I have read and understand this w
           <div className="space-y-4">
             <div>
               <Label className="text-sm font-medium">Rental Period</Label>
-              <div className="grid grid-cols-2 gap-4 mt-2">
+              <div className="space-y-4 mt-2">
                 <div>
-                  <Label className="text-xs text-muted-foreground">Start Date</Label>
+                  <Label className="text-xs text-muted-foreground block mb-2">Start Date</Label>
                   <Calendar
                     mode="single"
                     selected={startDate}
                     onSelect={setStartDate}
                     disabled={(date) => date < new Date()}
-                    className="rounded-md border"
+                    className="rounded-md border w-full"
                     data-testid="calendar-start-date"
                   />
                 </div>
                 <div>
-                  <Label className="text-xs text-muted-foreground">End Date</Label>
+                  <Label className="text-xs text-muted-foreground block mb-2">End Date</Label>
                   <Calendar
                     mode="single"
                     selected={endDate}
                     onSelect={setEndDate}
                     disabled={(date) => !startDate || date <= startDate}
-                    className="rounded-md border"
+                    className="rounded-md border w-full"
                     data-testid="calendar-end-date"
                   />
                 </div>
@@ -294,7 +294,7 @@ By digitally signing below, I acknowledge that I have read and understand this w
           )}
 
           {/* Waiver Section */}
-          {isAuthenticated && !waiverStatus?.signed && (
+          {isAuthenticated && (!waiverStatus || !(waiverStatus as any)?.signed) && (
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
               <h4 className="font-semibold text-yellow-800 mb-2">Waiver Required</h4>
               <p className="text-sm text-yellow-700 mb-3">
@@ -319,7 +319,7 @@ By digitally signing below, I acknowledge that I have read and understand this w
               !startDate || 
               !endDate || 
               createBookingMutation.isPending ||
-              (isAuthenticated && !waiverStatus?.signed)
+              (isAuthenticated && (!waiverStatus || !(waiverStatus as any)?.signed))
             }
             className="w-full btn-primary py-3 font-semibold"
             data-testid="button-book-rental"
