@@ -11,7 +11,7 @@ import type { Product } from "@shared/schema";
 export default function Products() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState({
-    category: "",
+    category: "all",
     minPrice: 0,
     maxPrice: 1000,
     carCompatibility: "",
@@ -24,7 +24,7 @@ export default function Products() {
   const filteredProducts = products?.filter((product) => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          product.description?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = !filters.category || product.category === filters.category;
+    const matchesCategory = filters.category === 'all' || !filters.category || product.category === filters.category;
     const matchesPrice = parseFloat(product.dailyRate) >= filters.minPrice && 
                         parseFloat(product.dailyRate) <= filters.maxPrice;
     const matchesCar = !filters.carCompatibility || 

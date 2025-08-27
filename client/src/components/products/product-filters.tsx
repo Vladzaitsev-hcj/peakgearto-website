@@ -28,12 +28,12 @@ export default function ProductFilters({ filters, onFiltersChange }: ProductFilt
         {/* Category Filter */}
         <div>
           <Label className="text-sm font-medium mb-2 block">Category</Label>
-          <Select value={filters.category} onValueChange={(value) => updateFilter('category', value)}>
+          <Select value={filters.category || 'all'} onValueChange={(value) => updateFilter('category', value === 'all' ? '' : value)}>
             <SelectTrigger data-testid="select-category">
               <SelectValue placeholder="All categories" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Categories</SelectItem>
+              <SelectItem value="all">All Categories</SelectItem>
               <SelectItem value="cargo_box">Roof Boxes</SelectItem>
               <SelectItem value="bike_carrier">Bike Carriers</SelectItem>
             </SelectContent>
@@ -92,7 +92,7 @@ export default function ProductFilters({ filters, onFiltersChange }: ProductFilt
 
         {/* Clear Filters */}
         <button
-          onClick={() => onFiltersChange({ category: '', minPrice: 0, maxPrice: 1000, carCompatibility: '' })}
+          onClick={() => onFiltersChange({ category: 'all', minPrice: 0, maxPrice: 1000, carCompatibility: '' })}
           className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors border border-border rounded-lg py-2"
           data-testid="button-clear-filters"
         >
