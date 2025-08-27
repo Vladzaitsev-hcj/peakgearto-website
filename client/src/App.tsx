@@ -11,6 +11,7 @@ import ProductDetail from "@/pages/product-detail";
 import UserDashboard from "@/pages/user-dashboard";
 import AdminDashboard from "@/pages/admin-dashboard";
 import About from "@/pages/about";
+import Contact from "@/pages/contact";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -21,6 +22,7 @@ function Router() {
         <>
           <Route path="/" component={Landing} />
           <Route path="/about" component={About} />
+          <Route path="/contact" component={Contact} />
         </>
       ) : (
         <>
@@ -30,6 +32,7 @@ function Router() {
           <Route path="/dashboard" component={UserDashboard} />
           <Route path="/admin" component={AdminDashboard} />
           <Route path="/about" component={About} />
+          <Route path="/contact" component={Contact} />
         </>
       )}
       <Route component={NotFound} />
