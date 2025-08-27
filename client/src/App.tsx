@@ -10,6 +10,7 @@ import Products from "@/pages/products";
 import ProductDetail from "@/pages/product-detail";
 import UserDashboard from "@/pages/user-dashboard";
 import AdminDashboard from "@/pages/admin-dashboard";
+import About from "@/pages/about";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -17,7 +18,10 @@ function Router() {
   return (
     <Switch>
       {isLoading || !isAuthenticated ? (
-        <Route path="/" component={Landing} />
+        <>
+          <Route path="/" component={Landing} />
+          <Route path="/about" component={About} />
+        </>
       ) : (
         <>
           <Route path="/" component={Home} />
@@ -25,6 +29,7 @@ function Router() {
           <Route path="/products/:id" component={ProductDetail} />
           <Route path="/dashboard" component={UserDashboard} />
           <Route path="/admin" component={AdminDashboard} />
+          <Route path="/about" component={About} />
         </>
       )}
       <Route component={NotFound} />
