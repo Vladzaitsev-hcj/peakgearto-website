@@ -21,6 +21,8 @@ function Router() {
       {isLoading || !isAuthenticated ? (
         <>
           <Route path="/" component={Landing} />
+          <Route path="/products" component={Products} />
+          <Route path="/products/:id" component={ProductDetail} />
           <Route path="/about" component={About} />
           <Route path="/contact" component={Contact} />
         </>
