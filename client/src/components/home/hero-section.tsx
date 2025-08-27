@@ -29,7 +29,16 @@ export default function HeroSection() {
               <ArrowRight className="ml-2 h-5 w-5" />
             </button>
           </Link>
-          <button className="btn-secondary px-8 py-4 rounded-lg font-semibold text-lg" data-testid="button-learn-more">
+          <button 
+            onClick={() => {
+              const howItWorksSection = document.getElementById('how-it-works');
+              if (howItWorksSection) {
+                howItWorksSection.scrollIntoView({ behavior: 'smooth' });
+              }
+            }}
+            className="btn-secondary px-8 py-4 rounded-lg font-semibold text-lg" 
+            data-testid="button-learn-more"
+          >
             Learn More
           </button>
         </div>
