@@ -14,6 +14,7 @@ import About from "@/pages/about";
 import Contact from "@/pages/contact";
 import Pricing from "@/pages/pricing";
 import FAQ from "@/pages/faq";
+import Terms from "@/pages/terms";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -29,6 +30,7 @@ function Router() {
           <Route path="/contact" component={Contact} />
           <Route path="/pricing" component={Pricing} />
           <Route path="/faq" component={FAQ} />
+          <Route path="/terms" component={Terms} />
         </>
       ) : (
         <>
@@ -41,6 +43,7 @@ function Router() {
           <Route path="/contact" component={Contact} />
           <Route path="/pricing" component={Pricing} />
           <Route path="/faq" component={FAQ} />
+          <Route path="/terms" component={Terms} />
         </>
       )}
       <Route component={NotFound} />
