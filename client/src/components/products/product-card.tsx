@@ -49,8 +49,8 @@ export default function ProductCard({ product }: ProductCardProps) {
         <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
           <IconComponent className="h-4 w-4 text-accent" />
           <span>
-            {product.category === 'cargo_box' ? 'Fits most vehicles' : 
-             product.category === 'bike_carrier' ? 'Holds multiple bikes' : 'Premium choice'}
+            {product.category === 'cargo_box' ? 'Professional installation included' : 
+             product.category === 'bike_carrier' ? 'Multiple mounting options available' : 'Premium choice'}
           </span>
         </div>
         <Link href={`/products/${product.id}`}>

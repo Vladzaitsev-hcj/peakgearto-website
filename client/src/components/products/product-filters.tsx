@@ -9,7 +9,6 @@ interface ProductFiltersProps {
     category: string;
     minPrice: number;
     maxPrice: number;
-    carCompatibility: string;
   };
   onFiltersChange: (filters: any) => void;
 }
@@ -79,20 +78,10 @@ export default function ProductFilters({ filters, onFiltersChange }: ProductFilt
           </div>
         </div>
 
-        {/* Car Compatibility Filter */}
-        <div>
-          <Label className="text-sm font-medium mb-2 block">Car Compatibility</Label>
-          <Input
-            placeholder="e.g., Honda, Toyota, SUV..."
-            value={filters.carCompatibility}
-            onChange={(e) => updateFilter('carCompatibility', e.target.value)}
-            data-testid="input-car-compatibility"
-          />
-        </div>
 
         {/* Clear Filters */}
         <button
-          onClick={() => onFiltersChange({ category: 'all', minPrice: 0, maxPrice: 1000, carCompatibility: '' })}
+          onClick={() => onFiltersChange({ category: 'all', minPrice: 0, maxPrice: 1000 })}
           className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors border border-border rounded-lg py-2"
           data-testid="button-clear-filters"
         >

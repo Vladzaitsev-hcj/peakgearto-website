@@ -176,24 +176,51 @@ export default function ProductDetail() {
                 </Card>
               )}
 
-              {/* Car Compatibility */}
-              {product.compatibleCars && product.compatibleCars.length > 0 && (
-                <Card className="mb-6">
-                  <CardContent className="pt-6">
-                    <div className="flex items-center gap-2 mb-4">
-                      <Car className="h-5 w-5 text-accent" />
-                      <h3 className="text-lg font-semibold">Compatible Vehicles</h3>
+              {/* Vehicle Compatibility */}
+              <Card className="mb-6">
+                <CardContent className="pt-6">
+                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <Car className="h-5 w-5 text-primary" />
+                    Vehicle Compatibility
+                  </h3>
+                  <div className="space-y-4">
+                    <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
+                      <h4 className="font-semibold text-foreground mb-2">
+                        {product.category === 'cargo_box' ? 'Roof Box Requirements' : 'Bike Carrier Requirements'}
+                      </h4>
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        {product.category === 'cargo_box' 
+                          ? 'Most cargo boxes require factory roof rails or aftermarket crossbars. Compatible with sedans, SUVs, wagons, and crossovers that have proper roof mounting points.'
+                          : 'Bike carriers can be mounted on roof rails, trailer hitches (1.25" or 2"), or trunk/hatch areas. Installation method depends on your vehicle type and preferred mounting location.'
+                        }
+                      </p>
                     </div>
-                    <div className="flex flex-wrap gap-2">
-                      {product.compatibleCars.map((car, index) => (
-                        <Badge key={index} variant="outline" data-testid={`badge-car-${index}`}>
-                          {car}
-                        </Badge>
-                      ))}
+                    <div className="bg-accent/5 border border-accent/20 rounded-lg p-4">
+                      <h4 className="font-semibold text-foreground mb-2">Not Sure About Compatibility?</h4>
+                      <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+                        Our team will help ensure this equipment works perfectly with your vehicle. We provide free compatibility consultation and professional installation guidance.
+                      </p>
+                      <div className="flex flex-col sm:flex-row gap-2">
+                        <a 
+                          href="/contact" 
+                          className="inline-flex items-center justify-center bg-accent hover:bg-accent/90 text-accent-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                          data-testid="button-compatibility-help"
+                        >
+                          Get Compatibility Help
+                        </a>
+                        <a 
+                          href="tel:+14165556327" 
+                          className="inline-flex items-center justify-center border border-border hover:bg-muted text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                          data-testid="button-call-compatibility"
+                        >
+                          Call (416) 555-GEAR
+                        </a>
+                      </div>
                     </div>
-                  </CardContent>
-                </Card>
-              )}
+                  </div>
+                </CardContent>
+              </Card>
+
             </div>
           </div>
 

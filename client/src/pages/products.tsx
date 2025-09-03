@@ -14,7 +14,6 @@ export default function Products() {
     category: "all",
     minPrice: 0,
     maxPrice: 1000,
-    carCompatibility: "",
   });
 
   const { data: products, isLoading, error } = useQuery<Product[]>({
@@ -27,12 +26,8 @@ export default function Products() {
     const matchesCategory = filters.category === 'all' || !filters.category || product.category === filters.category;
     const matchesPrice = parseFloat(product.dailyRate) >= filters.minPrice && 
                         parseFloat(product.dailyRate) <= filters.maxPrice;
-    const matchesCar = !filters.carCompatibility || 
-                      product.compatibleCars?.some(car => 
-                        car.toLowerCase().includes(filters.carCompatibility.toLowerCase())
-                      );
     
-    return matchesSearch && matchesCategory && matchesPrice && matchesCar;
+    return matchesSearch && matchesCategory && matchesPrice;
   });
 
   return (
