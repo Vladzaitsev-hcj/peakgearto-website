@@ -20,11 +20,15 @@ export default function Header() {
     },
     onSuccess: () => {
       queryClient.setQueryData(["/api/auth/user"], null);
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
       toast({
         title: "Signed out",
         description: "You have been signed out successfully.",
       });
-      setLocation("/");
+      // Small delay to ensure React state updates properly
+      setTimeout(() => {
+        setLocation("/");
+      }, 100);
     },
     onError: () => {
       toast({
