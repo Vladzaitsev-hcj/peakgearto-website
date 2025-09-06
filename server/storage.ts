@@ -61,6 +61,7 @@ export class MongoStorage implements IStorage {
       id: new ObjectId().toString(),
       ...userData,
       waiverSigned: false,
+      isAdmin: false,
       createdAt: now,
       updatedAt: now
     };
@@ -239,6 +240,7 @@ export class MongoStorage implements IStorage {
       lastName: doc.lastName,
       profileImageUrl: doc.profileImageUrl,
       waiverSigned: doc.waiverSigned || false,
+      isAdmin: doc.isAdmin || false,
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt
     };

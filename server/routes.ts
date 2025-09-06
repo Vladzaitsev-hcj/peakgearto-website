@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { setupAuth, isAuthenticated } from "./auth";
+import { setupAuth, isAuthenticated, isAdmin } from "./auth";
 import { insertProductSchema, insertBookingSchema, insertWaiverSchema } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -34,7 +34,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/products', isAuthenticated, async (req: any, res) => {
+  app.post('/api/products', isAdmin, async (req: any, res) => {
     try {
       const validatedProduct = insertProductSchema.parse(req.body);
       const product = await storage.createProduct(validatedProduct);
@@ -45,7 +45,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put('/api/products/:id', isAuthenticated, async (req: any, res) => {
+  app.put('/api/products/:id', isAdmin, async (req: any, res) => {
     try {
       const updates = insertProductSchema.partial().parse(req.body);
       const product = await storage.updateProduct(req.params.id, updates);
@@ -56,7 +56,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete('/api/products/:id', isAuthenticated, async (req: any, res) => {
+  app.delete('/api/products/:id', isAdmin, async (req: any, res) => {
     try {
       await storage.deleteProduct(req.params.id);
       res.status(204).send();
@@ -103,9 +103,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/admin/bookings', isAuthenticated, async (req: any, res) => {
+  app.get('/api/admin/bookings', isAdmin, async (req: any, res) => {
     try {
-      // In a real app, you'd check if user is admin
       const bookings = await storage.getAllBookings();
       res.json(bookings);
     } catch (error) {

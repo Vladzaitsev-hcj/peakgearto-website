@@ -155,6 +155,31 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
   }
 };
 
+export const isAdmin: RequestHandler = async (req, res, next) => {
+  if (!req.session.userId) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  try {
+    const user = await storage.getUser(req.session.userId);
+    if (!user) {
+      return res.status(401).json({ message: "User not found" });
+    }
+
+    if (!user.isAdmin) {
+      return res.status(403).json({ message: "Admin access required" });
+    }
+
+    // Attach user to request object (without password)
+    const { password: _, ...userWithoutPassword } = user;
+    req.user = userWithoutPassword as any;
+    next();
+  } catch (error) {
+    console.error("Admin authentication middleware error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 // Extend Express Request interface
 declare global {
   namespace Express {
