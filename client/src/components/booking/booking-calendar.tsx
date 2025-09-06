@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -28,6 +28,41 @@ export default function BookingCalendar({ product }: BookingCalendarProps) {
   const [endDate, setEndDate] = useState<Date>();
   const [deliveryOption, setDeliveryOption] = useState<string>('pickup');
   const [notes, setNotes] = useState('');
+
+  // Restore booking state from session storage when component loads
+  useEffect(() => {
+    const savedBookingState = sessionStorage.getItem('bookingState');
+    if (savedBookingState) {
+      try {
+        const { startDate: savedStartDate, endDate: savedEndDate, deliveryOption: savedDelivery, notes: savedNotes, productId } = JSON.parse(savedBookingState);
+        
+        // Only restore if it's for the same product
+        if (productId === product.id) {
+          if (savedStartDate) setStartDate(new Date(savedStartDate));
+          if (savedEndDate) setEndDate(new Date(savedEndDate));
+          if (savedDelivery) setDeliveryOption(savedDelivery);
+          if (savedNotes) setNotes(savedNotes);
+          
+          // Clear the saved state after restoring
+          sessionStorage.removeItem('bookingState');
+        }
+      } catch (error) {
+        console.log('Error restoring booking state:', error);
+      }
+    }
+  }, [product.id]);
+
+  // Helper function to save current booking state
+  const saveBookingState = () => {
+    const bookingState = {
+      productId: product.id,
+      startDate: startDate?.toISOString(),
+      endDate: endDate?.toISOString(),
+      deliveryOption,
+      notes
+    };
+    sessionStorage.setItem('bookingState', JSON.stringify(bookingState));
+  };
 
   // Check waiver status
   const { data: waiverStatus } = useQuery({
@@ -60,7 +95,8 @@ export default function BookingCalendar({ product }: BookingCalendarProps) {
           variant: "destructive",
         });
         setTimeout(() => {
-          // Store the current page URL to redirect back after login
+          // Store the current booking state and page URL to redirect back after login
+          saveBookingState();
           sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
           window.location.href = "/auth";
         }, 500);
@@ -131,7 +167,8 @@ By digitally signing below, I acknowledge that I have read and understand this w
         variant: "destructive",
       });
       setTimeout(() => {
-        // Store the current page URL to redirect back after login
+        // Store the current booking state and page URL to redirect back after login
+        saveBookingState();
         sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
         window.location.href = "/auth";
       }, 500);
@@ -171,7 +208,8 @@ By digitally signing below, I acknowledge that I have read and understand this w
 
   const handleSignWaiver = () => {
     if (!isAuthenticated) {
-      // Store the current page URL to redirect back after login
+      // Store the current booking state and page URL to redirect back after login
+      saveBookingState();
       sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
       window.location.href = "/auth";
       return;
