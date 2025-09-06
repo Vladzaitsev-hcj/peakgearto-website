@@ -60,6 +60,8 @@ export default function BookingCalendar({ product }: BookingCalendarProps) {
           variant: "destructive",
         });
         setTimeout(() => {
+          // Store the current page URL to redirect back after login
+          sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
           window.location.href = "/auth";
         }, 500);
         return;
@@ -129,6 +131,8 @@ By digitally signing below, I acknowledge that I have read and understand this w
         variant: "destructive",
       });
       setTimeout(() => {
+        // Store the current page URL to redirect back after login
+        sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
         window.location.href = "/auth";
       }, 500);
       return;
@@ -167,6 +171,8 @@ By digitally signing below, I acknowledge that I have read and understand this w
 
   const handleSignWaiver = () => {
     if (!isAuthenticated) {
+      // Store the current page URL to redirect back after login
+      sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
       window.location.href = "/auth";
       return;
     }

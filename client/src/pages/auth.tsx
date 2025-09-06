@@ -40,7 +40,15 @@ export default function AuthPage() {
         title: "Welcome back!",
         description: "You have been logged in successfully.",
       });
-      setLocation("/");
+      
+      // Check for stored redirect URL
+      const redirectUrl = sessionStorage.getItem('redirectAfterLogin');
+      if (redirectUrl) {
+        sessionStorage.removeItem('redirectAfterLogin');
+        setLocation(redirectUrl);
+      } else {
+        setLocation("/");
+      }
     },
     onError: (error: any) => {
       toast({
@@ -67,7 +75,15 @@ export default function AuthPage() {
         title: "Welcome to Peak Gear TO!",
         description: "Your account has been created successfully.",
       });
-      setLocation("/");
+      
+      // Check for stored redirect URL
+      const redirectUrl = sessionStorage.getItem('redirectAfterLogin');
+      if (redirectUrl) {
+        sessionStorage.removeItem('redirectAfterLogin');
+        setLocation(redirectUrl);
+      } else {
+        setLocation("/");
+      }
     },
     onError: (error: any) => {
       toast({
