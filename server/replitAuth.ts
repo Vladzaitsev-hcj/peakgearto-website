@@ -8,8 +8,19 @@ import memoize from "memoizee";
 import connectPg from "connect-pg-simple";
 import { storage } from "./storage";
 
-if (!process.env.REPLIT_DOMAINS) {
-  throw new Error("Environment variable REPLIT_DOMAINS not provided");
+// Get domains for authentication - support both Replit and Render deployments
+function getDomains(): string[] {
+  if (process.env.REPLIT_DOMAINS) {
+    return process.env.REPLIT_DOMAINS.split(",");
+  }
+  
+  if (process.env.RENDER_EXTERNAL_URL) {
+    // Extract domain from RENDER_EXTERNAL_URL (e.g., "https://myapp.render.com" -> "myapp.render.com")
+    const url = new URL(process.env.RENDER_EXTERNAL_URL);
+    return [url.hostname];
+  }
+  
+  throw new Error("Either REPLIT_DOMAINS or RENDER_EXTERNAL_URL environment variable must be provided");
 }
 
 const getOidcConfig = memoize(
@@ -84,8 +95,7 @@ export async function setupAuth(app: Express) {
     verified(null, user);
   };
 
-  for (const domain of process.env
-    .REPLIT_DOMAINS!.split(",")) {
+  for (const domain of getDomains()) {
     const strategy = new Strategy(
       {
         name: `replitauth:${domain}`,
