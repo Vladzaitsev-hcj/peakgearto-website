@@ -75,7 +75,7 @@ export default function CheckoutForm({ product, bookingDetails, onPaymentSuccess
           variant: "destructive",
         });
         setTimeout(() => {
-          window.location.href = "/api/login";
+          window.location.href = "/auth";
         }, 500);
         return;
       }

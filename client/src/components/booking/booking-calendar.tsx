@@ -60,7 +60,7 @@ export default function BookingCalendar({ product }: BookingCalendarProps) {
           variant: "destructive",
         });
         setTimeout(() => {
-          window.location.href = "/api/login";
+          window.location.href = "/auth";
         }, 500);
         return;
       }
@@ -129,7 +129,7 @@ By digitally signing below, I acknowledge that I have read and understand this w
         variant: "destructive",
       });
       setTimeout(() => {
-        window.location.href = "/api/login";
+        window.location.href = "/auth";
       }, 500);
       return;
     }
@@ -167,7 +167,7 @@ By digitally signing below, I acknowledge that I have read and understand this w
 
   const handleSignWaiver = () => {
     if (!isAuthenticated) {
-      window.location.href = "/api/login";
+      window.location.href = "/auth";
       return;
     }
     signWaiverMutation.mutate();
