@@ -7,14 +7,17 @@ import {
   type InsertBooking,
   type Waiver,
   type InsertWaiver,
+  type InsertUser,
 } from "@shared/schema";
 import { connectToMongoDB } from "./mongodb";
 import { ObjectId } from "mongodb";
 
 // Interface for storage operations
 export interface IStorage {
-  // User operations (mandatory for Replit Auth)
+  // User operations
   getUser(id: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
+  createUser(user: InsertUser): Promise<User>;
   upsertUser(user: UpsertUser): Promise<User>;
   
   // Product operations
@@ -38,11 +41,32 @@ export interface IStorage {
 }
 
 export class MongoStorage implements IStorage {
-  // User operations (mandatory for Replit Auth)
+  // User operations
   async getUser(id: string): Promise<User | undefined> {
     const db = await connectToMongoDB();
     const user = await db.collection('users').findOne({ id });
     return user ? this.mapMongoUser(user) : undefined;
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const db = await connectToMongoDB();
+    const user = await db.collection('users').findOne({ email });
+    return user ? this.mapMongoUser(user) : undefined;
+  }
+
+  async createUser(userData: InsertUser): Promise<User> {
+    const db = await connectToMongoDB();
+    const now = new Date();
+    const newUser = {
+      id: new ObjectId().toString(),
+      ...userData,
+      waiverSigned: false,
+      createdAt: now,
+      updatedAt: now
+    };
+    
+    await db.collection('users').insertOne(newUser);
+    return this.mapMongoUser(newUser);
   }
 
   async upsertUser(userData: UpsertUser): Promise<User> {
@@ -210,6 +234,7 @@ export class MongoStorage implements IStorage {
     return {
       id: doc.id,
       email: doc.email,
+      password: doc.password,
       firstName: doc.firstName,
       lastName: doc.lastName,
       profileImageUrl: doc.profileImageUrl,

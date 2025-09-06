@@ -1,13 +1,39 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Mountain, Menu, X } from "lucide-react";
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { isAuthenticated, user } = useAuth();
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      await apiRequest("POST", "/api/logout");
+    },
+    onSuccess: () => {
+      queryClient.setQueryData(["/api/auth/user"], null);
+      toast({
+        title: "Signed out",
+        description: "You have been signed out successfully.",
+      });
+      setLocation("/");
+    },
+    onError: () => {
+      toast({
+        title: "Sign out failed",
+        description: "There was an error signing you out.",
+        variant: "destructive",
+      });
+    },
+  });
 
   const navigation = [
     { name: "Browse Gear", href: "/products" },
@@ -56,28 +82,31 @@ export default function Header() {
                 </span>
                 <Button 
                   variant="outline" 
-                  onClick={() => window.location.href = "/api/logout"}
+                  onClick={() => logoutMutation.mutate()}
+                  disabled={logoutMutation.isPending}
                   data-testid="button-logout"
                 >
-                  Sign Out
+                  {logoutMutation.isPending ? "Signing out..." : "Sign Out"}
                 </Button>
               </>
             ) : (
               <>
-                <Button 
-                  variant="ghost" 
-                  onClick={() => window.location.href = "/api/login"}
-                  data-testid="button-signin"
-                >
-                  Sign In
-                </Button>
-                <Button 
-                  className="btn-primary px-4 py-2 rounded-lg font-medium"
-                  onClick={() => window.location.href = "/api/login"}
-                  data-testid="button-signup"
-                >
-                  Sign Up
-                </Button>
+                <Link href="/auth">
+                  <Button 
+                    variant="ghost"
+                    data-testid="button-signin"
+                  >
+                    Sign In
+                  </Button>
+                </Link>
+                <Link href="/auth">
+                  <Button 
+                    className="btn-primary px-4 py-2 rounded-lg font-medium"
+                    data-testid="button-signup"
+                  >
+                    Sign Up
+                  </Button>
+                </Link>
               </>
             )}
           </div>
@@ -129,35 +158,34 @@ export default function Header() {
                     className="block w-full text-left px-3 py-2 text-base font-medium text-foreground hover:text-primary"
                     onClick={() => {
                       setIsMobileMenuOpen(false);
-                      window.location.href = "/api/logout";
+                      logoutMutation.mutate();
                     }}
+                    disabled={logoutMutation.isPending}
                     data-testid="mobile-button-logout"
                   >
-                    Sign Out
+                    {logoutMutation.isPending ? "Signing out..." : "Sign Out"}
                   </button>
                 </div>
               ) : (
                 <div className="space-y-2">
-                  <button 
-                    className="block w-full text-left px-3 py-2 text-base font-medium text-foreground hover:text-primary"
-                    onClick={() => {
-                      setIsMobileMenuOpen(false);
-                      window.location.href = "/api/login";
-                    }}
-                    data-testid="mobile-button-signin"
-                  >
-                    Sign In
-                  </button>
-                  <button 
-                    className="block w-full text-left px-3 py-2 text-base font-medium btn-primary rounded-lg"
-                    onClick={() => {
-                      setIsMobileMenuOpen(false);
-                      window.location.href = "/api/login";
-                    }}
-                    data-testid="mobile-button-signup"
-                  >
-                    Sign Up
-                  </button>
+                  <Link href="/auth">
+                    <span 
+                      className="block px-3 py-2 text-base font-medium text-foreground hover:text-primary cursor-pointer"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      data-testid="mobile-button-signin"
+                    >
+                      Sign In
+                    </span>
+                  </Link>
+                  <Link href="/auth">
+                    <span 
+                      className="block px-3 py-2 text-base font-medium btn-primary rounded-lg cursor-pointer"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      data-testid="mobile-button-signup"
+                    >
+                      Sign Up
+                    </span>
+                  </Link>
                 </div>
               )}
             </div>
