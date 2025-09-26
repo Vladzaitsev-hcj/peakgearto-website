@@ -19,6 +19,10 @@ export interface IStorage {
   getUserByEmail(email: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   upsertUser(user: UpsertUser): Promise<User>;
+  setPasswordResetToken(email: string, token: string, expiry: Date): Promise<void>;
+  getUserByResetToken(token: string): Promise<User | undefined>;
+  clearPasswordResetToken(userId: string): Promise<void>;
+  updatePassword(userId: string, newPassword: string): Promise<void>;
   
   // Product operations
   getAllProducts(): Promise<Product[]>;
@@ -230,6 +234,59 @@ export class MongoStorage implements IStorage {
     return waiver ? this.mapMongoWaiver(waiver) : undefined;
   }
 
+  // Password reset operations
+  async setPasswordResetToken(email: string, token: string, expiry: Date): Promise<void> {
+    const db = await connectToMongoDB();
+    await db.collection('users').updateOne(
+      { email },
+      { 
+        $set: { 
+          resetToken: token,
+          resetTokenExpiry: expiry,
+          updatedAt: new Date()
+        }
+      }
+    );
+  }
+
+  async getUserByResetToken(token: string): Promise<User | undefined> {
+    const db = await connectToMongoDB();
+    const user = await db.collection('users').findOne({ 
+      resetToken: token,
+      resetTokenExpiry: { $gt: new Date() }
+    });
+    return user ? this.mapMongoUser(user) : undefined;
+  }
+
+  async clearPasswordResetToken(userId: string): Promise<void> {
+    const db = await connectToMongoDB();
+    await db.collection('users').updateOne(
+      { id: userId },
+      { 
+        $unset: { 
+          resetToken: "",
+          resetTokenExpiry: ""
+        },
+        $set: {
+          updatedAt: new Date()
+        }
+      }
+    );
+  }
+
+  async updatePassword(userId: string, newPassword: string): Promise<void> {
+    const db = await connectToMongoDB();
+    await db.collection('users').updateOne(
+      { id: userId },
+      { 
+        $set: { 
+          password: newPassword,
+          updatedAt: new Date()
+        }
+      }
+    );
+  }
+
   // Helper methods to map MongoDB documents to TypeScript types
   private mapMongoUser(doc: any): User {
     return {
@@ -241,6 +298,8 @@ export class MongoStorage implements IStorage {
       profileImageUrl: doc.profileImageUrl,
       waiverSigned: doc.waiverSigned || false,
       isAdmin: doc.isAdmin || false,
+      resetToken: doc.resetToken || null,
+      resetTokenExpiry: doc.resetTokenExpiry || null,
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt
     };

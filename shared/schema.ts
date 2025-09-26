@@ -36,6 +36,8 @@ export const users = pgTable("users", {
   profileImageUrl: varchar("profile_image_url"),
   waiverSigned: boolean("waiver_signed").default(false),
   isAdmin: boolean("is_admin").default(false),
+  resetToken: varchar("reset_token"),
+  resetTokenExpiry: timestamp("reset_token_expiry"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
