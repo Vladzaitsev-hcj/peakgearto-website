@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import session from "express-session";
 import type { Express, RequestHandler } from "express";
-import connectPg from "connect-pg-simple";
+import MongoStore from "connect-mongodb-session";
 import crypto from "crypto";
 import { storage } from "./storage";
 import { sendPasswordResetEmail, sendWelcomeEmail } from "./email";
@@ -29,25 +29,24 @@ function checkRateLimit(identifier: string): boolean {
   return true;
 }
 
-// Function to invalidate all sessions for a user from PostgreSQL session store
+// Function to invalidate all sessions for a user from MongoDB session store
 async function invalidateAllUserSessions(userId: string): Promise<void> {
   try {
-    const { Pool } = await import('pg');
-    const pool = new Pool({
-      connectionString: process.env.DATABASE_URL,
+    const { MongoClient } = await import('mongodb');
+    const client = new MongoClient(process.env.MONGODB_URI!);
+    await client.connect();
+    
+    const db = client.db();
+    const sessionsCollection = db.collection('sessions');
+    
+    // Delete all sessions that contain this userId in their session data
+    const result = await sessionsCollection.deleteMany({
+      'session.userId': userId
     });
     
-    // Delete all sessions that contain this userId in their session data using parameterized query
-    // Use JSON operator to safely extract userId from session data
-    const query = `
-      DELETE FROM sessions 
-      WHERE (sess::jsonb ->> 'userId') = $1
-    `;
+    console.log(`Invalidated ${result.deletedCount} sessions for user:`, userId);
     
-    const result = await pool.query(query, [userId]);
-    console.log(`Invalidated ${result.rowCount} sessions for user:`, userId);
-    
-    await pool.end();
+    await client.close();
   } catch (error) {
     console.error('Failed to invalidate user sessions:', error);
     // Don't throw error as this shouldn't fail the password reset
@@ -56,12 +55,11 @@ async function invalidateAllUserSessions(userId: string): Promise<void> {
 
 export function getSession() {
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
-  const pgStore = connectPg(session);
-  const sessionStore = new pgStore({
-    conString: process.env.DATABASE_URL,
-    createTableIfMissing: false,
-    ttl: sessionTtl,
-    tableName: "sessions",
+  const mongoStore = MongoStore(session);
+  const sessionStore = new mongoStore({
+    uri: process.env.MONGODB_URI!,
+    collection: 'sessions',
+    expires: sessionTtl,
   });
   return session({
     secret: process.env.SESSION_SECRET || 'your-secret-key-here',
@@ -283,7 +281,7 @@ export async function setupAuth(app: Express) {
           req.session.destroy(() => {});
         }
         
-        // Invalidate all sessions for this user from the PostgreSQL session store
+        // Invalidate all sessions for this user from the MongoDB session store
         await invalidateAllUserSessions(user.id);
         console.log('All sessions invalidated for user after password reset:', user.id);
       } catch (sessionError) {
