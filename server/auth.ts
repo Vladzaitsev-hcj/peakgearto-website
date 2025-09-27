@@ -228,7 +228,8 @@ export async function setupAuth(app: Express) {
       // Send reset email using Brevo
       try {
         // Use trusted environment variable for base URL to prevent Host header poisoning
-        const baseUrl = process.env.PUBLIC_BASE_URL || process.env.BASE_URL || 'http://localhost:5000';
+        const baseUrl = process.env.PUBLIC_BASE_URL || process.env.BASE_URL || 
+          (process.env.NODE_ENV === 'production' ? 'https://peakgearto-website.onrender.com' : 'http://localhost:5000');
         const resetUrl = `${baseUrl}/reset-password?token=${resetToken}`;
         
         await sendPasswordResetEmail(email, resetUrl);
