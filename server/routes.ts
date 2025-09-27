@@ -34,6 +34,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get('/api/admin/products', isAdmin, async (req, res) => {
+    try {
+      const products = await storage.getAllProductsAdmin();
+      res.json(products);
+    } catch (error) {
+      console.error("Error fetching admin products:", error);
+      res.status(500).json({ message: "Failed to fetch products" });
+    }
+  });
+
   app.post('/api/products', isAdmin, async (req: any, res) => {
     try {
       const validatedProduct = insertProductSchema.parse(req.body);

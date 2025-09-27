@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Edit, Trash2, Car, Bike } from "lucide-react";
+import { Plus, Edit, Trash2, Car, Bike, ToggleLeft, ToggleRight, RefreshCw } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertProductSchema, type Product, type InsertProduct } from "@shared/schema";
@@ -30,9 +30,10 @@ export default function ProductManagement() {
   const queryClient = useQueryClient();
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [showDisabled, setShowDisabled] = useState(true);
 
   const { data: products, isLoading } = useQuery<Product[]>({
-    queryKey: ["/api/products"],
+    queryKey: ["/api/admin/products"],
   });
 
   const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm<ProductFormData>({
@@ -59,7 +60,7 @@ export default function ProductManagement() {
         title: "Product Created",
         description: "New product has been added successfully.",
       });
-      queryClient.invalidateQueries({ queryKey: ["/api/products"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/products"] });
       setIsCreateDialogOpen(false);
       reset();
     },
@@ -71,7 +72,7 @@ export default function ProductManagement() {
           variant: "destructive",
         });
         setTimeout(() => {
-          window.location.href = "/api/login";
+          window.location.href = "/auth";
         }, 500);
         return;
       }
@@ -92,7 +93,7 @@ export default function ProductManagement() {
         title: "Product Updated",
         description: "Product has been updated successfully.",
       });
-      queryClient.invalidateQueries({ queryKey: ["/api/products"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/products"] });
       setEditingProduct(null);
       reset();
     },
@@ -104,7 +105,7 @@ export default function ProductManagement() {
           variant: "destructive",
         });
         setTimeout(() => {
-          window.location.href = "/api/login";
+          window.location.href = "/auth";
         }, 500);
         return;
       }
@@ -123,9 +124,9 @@ export default function ProductManagement() {
     onSuccess: () => {
       toast({
         title: "Product Deleted",
-        description: "Product has been removed successfully.",
+        description: "Product has been deleted successfully.",
       });
-      queryClient.invalidateQueries({ queryKey: ["/api/products"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/products"] });
     },
     onError: (error) => {
       if (isUnauthorizedError(error)) {
@@ -135,13 +136,44 @@ export default function ProductManagement() {
           variant: "destructive",
         });
         setTimeout(() => {
-          window.location.href = "/api/login";
+          window.location.href = "/auth";
         }, 500);
         return;
       }
       toast({
         title: "Error",
         description: "Failed to delete product. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const toggleProductAvailability = useMutation({
+    mutationFn: async ({ id, available }: { id: string; available: boolean }) => {
+      await apiRequest("PUT", `/api/products/${id}`, { available });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Product Updated",
+        description: "Product availability has been updated successfully.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/products"] });
+    },
+    onError: (error) => {
+      if (isUnauthorizedError(error)) {
+        toast({
+          title: "Unauthorized",
+          description: "You are logged out. Logging in again...",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          window.location.href = "/auth";
+        }, 500);
+        return;
+      }
+      toast({
+        title: "Error",
+        description: "Failed to update product availability. Please try again.",
         variant: "destructive",
       });
     },
@@ -166,6 +198,8 @@ export default function ProductManagement() {
     }
   };
 
+  const filteredProducts = products?.filter(product => showDisabled || product.available) || [];
+
   const onSubmit = (data: ProductFormData) => {
     const processedData: InsertProduct = {
       name: data.name,
@@ -173,7 +207,7 @@ export default function ProductManagement() {
       category: data.category,
       dailyRate: data.dailyRate,
       securityDeposit: data.securityDeposit,
-      specifications: data.specifications ? JSON.parse(data.specifications) : {},
+      specifications: data.specifications ? JSON.parse(String(data.specifications)) : {},
       compatibleCars: data.compatibleCars ? data.compatibleCars.split(',').map(car => car.trim()).filter(Boolean) : [],
       images: data.images ? data.images.split(',').map(img => img.trim()).filter(Boolean) : [],
       available: data.available,
@@ -199,180 +233,197 @@ export default function ProductManagement() {
           <p className="text-muted-foreground">Manage your rental inventory</p>
         </div>
         
-        <Dialog open={isCreateDialogOpen || !!editingProduct} onOpenChange={(open) => {
-          if (!open) {
-            setIsCreateDialogOpen(false);
-            setEditingProduct(null);
-            reset();
-          }
-        }}>
-          <DialogTrigger asChild>
-            <Button 
-              onClick={() => setIsCreateDialogOpen(true)} 
-              className="btn-primary"
-              data-testid="button-add-product"
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <Label htmlFor="show-disabled" className="text-sm">Show disabled:</Label>
+            <Button
+              id="show-disabled"
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowDisabled(!showDisabled)}
+              className="p-1"
+              data-testid="toggle-show-disabled"
             >
-              <Plus className="h-4 w-4 mr-2" />
-              Add Product
+              {showDisabled ? <ToggleRight className="h-4 w-4 text-green-600" /> : <ToggleLeft className="h-4 w-4 text-gray-400" />}
             </Button>
-          </DialogTrigger>
+          </div>
           
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>
-                {editingProduct ? 'Edit Product' : 'Add New Product'}
-              </DialogTitle>
-            </DialogHeader>
+          <Dialog open={isCreateDialogOpen || !!editingProduct} onOpenChange={(open) => {
+            if (!open) {
+              setIsCreateDialogOpen(false);
+              setEditingProduct(null);
+              reset();
+            }
+          }}>
+            <DialogTrigger asChild>
+              <Button 
+                onClick={() => setIsCreateDialogOpen(true)} 
+                className="btn-primary"
+                data-testid="button-add-product"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add Product
+              </Button>
+            </DialogTrigger>
             
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="name">Product Name *</Label>
-                  <Input
-                    id="name"
-                    {...register('name')}
-                    placeholder="e.g., Thule Motion XL"
-                    data-testid="input-product-name"
-                  />
-                  {errors.name && (
-                    <p className="text-sm text-destructive mt-1">{errors.name.message}</p>
-                  )}
+            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>
+                  {editingProduct ? 'Edit Product' : 'Add New Product'}
+                </DialogTitle>
+              </DialogHeader>
+              
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="name">Product Name *</Label>
+                    <Input
+                      id="name"
+                      {...register('name')}
+                      placeholder="e.g., Thule Motion XL"
+                      data-testid="input-product-name"
+                    />
+                    {errors.name && (
+                      <p className="text-sm text-destructive mt-1">{errors.name.message}</p>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="category">Category *</Label>
+                    <Select 
+                      value={watch('category')} 
+                      onValueChange={(value) => setValue('category', value as 'cargo_box' | 'bike_carrier')}
+                    >
+                      <SelectTrigger data-testid="select-product-category">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="cargo_box">Roof Box</SelectItem>
+                        <SelectItem value="bike_carrier">Bike Carrier</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
-                
+
                 <div>
-                  <Label htmlFor="category">Category *</Label>
-                  <Select 
-                    value={watch('category')} 
-                    onValueChange={(value) => setValue('category', value as 'cargo_box' | 'bike_carrier')}
+                  <Label htmlFor="description">Description</Label>
+                  <Textarea
+                    id="description"
+                    {...register('description')}
+                    placeholder="Product description..."
+                    className="min-h-[80px]"
+                    data-testid="textarea-product-description"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="dailyRate">Daily Rate ($) *</Label>
+                    <Input
+                      id="dailyRate"
+                      type="number"
+                      step="0.01"
+                      {...register('dailyRate')}
+                      placeholder="25.00"
+                      data-testid="input-daily-rate"
+                    />
+                    {errors.dailyRate && (
+                      <p className="text-sm text-destructive mt-1">{errors.dailyRate.message}</p>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="securityDeposit">Security Deposit ($) *</Label>
+                    <Input
+                      id="securityDeposit"
+                      type="number"
+                      step="0.01"
+                      {...register('securityDeposit')}
+                      placeholder="100.00"
+                      data-testid="input-security-deposit"
+                    />
+                    {errors.securityDeposit && (
+                      <p className="text-sm text-destructive mt-1">{errors.securityDeposit.message}</p>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="specifications">Specifications (JSON format)</Label>
+                  <Textarea
+                    id="specifications"
+                    {...register('specifications')}
+                    placeholder='{"capacity": "18 cu ft", "weight": "45 lbs"}'
+                    className="min-h-[60px] font-mono text-sm"
+                    data-testid="textarea-specifications"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="compatibleCars">Compatible Cars (comma-separated)</Label>
+                  <Textarea
+                    id="compatibleCars"
+                    {...register('compatibleCars')}
+                    placeholder="Honda CR-V, Toyota RAV4, Nissan Rogue"
+                    className="min-h-[60px]"
+                    data-testid="textarea-compatible-cars"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="images">Image URLs (comma-separated)</Label>
+                  <Textarea
+                    id="images"
+                    {...register('images')}
+                    placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"
+                    className="min-h-[60px]"
+                    data-testid="textarea-images"
+                  />
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="available"
+                    {...register('available')}
+                    className="rounded border-gray-300"
+                    data-testid="checkbox-available"
+                  />
+                  <Label htmlFor="available">Available for rent</Label>
+                </div>
+
+                <div className="flex gap-2 pt-4">
+                  <Button
+                    type="submit"
+                    disabled={createProductMutation.isPending || updateProductMutation.isPending}
+                    className="btn-primary"
+                    data-testid="button-save-product"
                   >
-                    <SelectTrigger data-testid="select-product-category">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="cargo_box">Roof Box</SelectItem>
-                      <SelectItem value="bike_carrier">Bike Carrier</SelectItem>
-                    </SelectContent>
-                  </Select>
+                    {editingProduct ? 'Update Product' : 'Create Product'}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      setIsCreateDialogOpen(false);
+                      setEditingProduct(null);
+                      reset();
+                    }}
+                    data-testid="button-cancel-product"
+                  >
+                    Cancel
+                  </Button>
                 </div>
-              </div>
-
-              <div>
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  {...register('description')}
-                  placeholder="Product description..."
-                  className="min-h-[80px]"
-                  data-testid="textarea-product-description"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="dailyRate">Daily Rate ($) *</Label>
-                  <Input
-                    id="dailyRate"
-                    type="number"
-                    step="0.01"
-                    {...register('dailyRate')}
-                    placeholder="29.99"
-                    data-testid="input-daily-rate"
-                  />
-                  {errors.dailyRate && (
-                    <p className="text-sm text-destructive mt-1">{errors.dailyRate.message}</p>
-                  )}
-                </div>
-                
-                <div>
-                  <Label htmlFor="securityDeposit">Security Deposit ($) *</Label>
-                  <Input
-                    id="securityDeposit"
-                    type="number"
-                    step="0.01"
-                    {...register('securityDeposit')}
-                    placeholder="200.00"
-                    data-testid="input-security-deposit"
-                  />
-                  {errors.securityDeposit && (
-                    <p className="text-sm text-destructive mt-1">{errors.securityDeposit.message}</p>
-                  )}
-                </div>
-              </div>
-
-              <div>
-                <Label htmlFor="specifications">Specifications (JSON)</Label>
-                <Textarea
-                  id="specifications"
-                  {...register('specifications')}
-                  placeholder='{"dimensions": "208 x 84 x 45 cm", "weight_capacity": "75 kg"}'
-                  className="min-h-[60px] font-mono text-sm"
-                  data-testid="textarea-specifications"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="compatibleCars">Compatible Cars (comma-separated)</Label>
-                <Input
-                  id="compatibleCars"
-                  {...register('compatibleCars')}
-                  placeholder="Honda Civic, Toyota Camry, BMW X3"
-                  data-testid="input-compatible-cars"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="images">Image URLs (comma-separated)</Label>
-                <Textarea
-                  id="images"
-                  {...register('images')}
-                  placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"
-                  className="min-h-[60px]"
-                  data-testid="textarea-images"
-                />
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  id="available"
-                  {...register('available')}
-                  className="w-4 h-4"
-                  data-testid="checkbox-available"
-                />
-                <Label htmlFor="available">Available for rental</Label>
-              </div>
-
-              <div className="flex gap-2 pt-4">
-                <Button
-                  type="submit"
-                  disabled={createProductMutation.isPending || updateProductMutation.isPending}
-                  className="btn-primary"
-                  data-testid="button-save-product"
-                >
-                  {editingProduct ? 'Update Product' : 'Create Product'}
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => {
-                    setIsCreateDialogOpen(false);
-                    setEditingProduct(null);
-                    reset();
-                  }}
-                  data-testid="button-cancel-product"
-                >
-                  Cancel
-                </Button>
-              </div>
-            </form>
-          </DialogContent>
-        </Dialog>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       {/* Products Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Products ({products?.length || 0})</CardTitle>
+          <CardTitle>Products ({filteredProducts.length || 0})</CardTitle>
         </CardHeader>
         <CardContent>
           {isLoading ? (
@@ -383,7 +434,7 @@ export default function ProductManagement() {
                 </div>
               ))}
             </div>
-          ) : !products || products.length === 0 ? (
+          ) : !filteredProducts || filteredProducts.length === 0 ? (
             <div className="text-center py-12">
               <Car className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-semibold mb-2">No Products</h3>
@@ -405,10 +456,10 @@ export default function ProductManagement() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {products.map((product) => {
+                  {filteredProducts.map((product) => {
                     const IconComponent = getProductIcon(product.category);
                     return (
-                      <TableRow key={product.id} data-testid={`row-product-${product.id}`}>
+                      <TableRow key={product.id} data-testid={`row-product-${product.id}`} className={!product.available ? "opacity-60" : ""}>
                         <TableCell>
                           <div className="flex items-center gap-3">
                             <IconComponent className="h-5 w-5 text-muted-foreground" />
@@ -434,12 +485,26 @@ export default function ProductManagement() {
                           ${product.securityDeposit}
                         </TableCell>
                         <TableCell>
-                          <Badge 
-                            variant={product.available ? "default" : "secondary"}
-                            data-testid={`badge-status-${product.id}`}
-                          >
-                            {product.available ? 'Available' : 'Unavailable'}
-                          </Badge>
+                          <div className="flex items-center gap-2">
+                            <Badge 
+                              variant={product.available ? "default" : "secondary"}
+                              data-testid={`badge-status-${product.id}`}
+                            >
+                              {product.available ? 'Available' : 'Disabled'}
+                            </Badge>
+                            {!product.available && (
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => toggleProductAvailability.mutate({ id: product.id, available: true })}
+                                disabled={toggleProductAvailability.isPending}
+                                data-testid={`button-enable-${product.id}`}
+                                title="Enable this product"
+                              >
+                                <RefreshCw className="h-3 w-3 text-green-600" />
+                              </Button>
+                            )}
+                          </div>
                         </TableCell>
                         <TableCell>
                           <div className="flex gap-2">
@@ -451,15 +516,29 @@ export default function ProductManagement() {
                             >
                               <Edit className="h-4 w-4" />
                             </Button>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => handleDelete(product.id)}
-                              disabled={deleteProductMutation.isPending}
-                              data-testid={`button-delete-${product.id}`}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
+                            {product.available ? (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => toggleProductAvailability.mutate({ id: product.id, available: false })}
+                                disabled={toggleProductAvailability.isPending}
+                                data-testid={`button-disable-${product.id}`}
+                                title="Disable this product"
+                              >
+                                <ToggleLeft className="h-4 w-4 text-orange-600" />
+                              </Button>
+                            ) : (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleDelete(product.id)}
+                                disabled={deleteProductMutation.isPending}
+                                data-testid={`button-delete-${product.id}`}
+                                title="Permanently delete this product"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            )}
                           </div>
                         </TableCell>
                       </TableRow>

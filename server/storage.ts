@@ -26,6 +26,7 @@ export interface IStorage {
   
   // Product operations
   getAllProducts(): Promise<Product[]>;
+  getAllProductsAdmin(): Promise<Product[]>;
   getProduct(id: string): Promise<Product | undefined>;
   createProduct(product: InsertProduct): Promise<Product>;
   updateProduct(id: string, product: Partial<InsertProduct>): Promise<Product>;
@@ -95,6 +96,16 @@ export class MongoStorage implements IStorage {
     const db = await connectToMongoDB();
     const products = await db.collection('products')
       .find({ available: { $ne: false } })
+      .sort({ createdAt: -1 })
+      .toArray();
+    
+    return products.map(this.mapMongoProduct);
+  }
+
+  async getAllProductsAdmin(): Promise<Product[]> {
+    const db = await connectToMongoDB();
+    const products = await db.collection('products')
+      .find({})
       .sort({ createdAt: -1 })
       .toArray();
     
