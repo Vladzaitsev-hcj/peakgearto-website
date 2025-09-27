@@ -86,7 +86,7 @@ export async function sendPasswordResetEmail(to: string, resetUrl: string): Prom
       htmlContent,
       textContent,
       sender: { 
-        email: "noreply@peakgearto.com", 
+        email: "peakgearto_norep@outlook.com", 
         name: "Peak Gear TO" 
       }
     });
@@ -155,7 +155,7 @@ export async function sendWelcomeEmail(to: string, firstName: string): Promise<v
       subject: "Welcome to Peak Gear TO!",
       htmlContent,
       sender: { 
-        email: "noreply@peakgearto.com", 
+        email: "peakgearto_norep@outlook.com", 
         name: "Peak Gear TO" 
       }
     });
