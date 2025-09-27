@@ -145,31 +145,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Temporary admin setup route (remove after use)
-  app.post('/api/make-admin', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = req.user.id;
-      
-      // Update the current user to be an admin
-      await storage.upsertUser({
-        id: userId,
-        email: req.user.email,
-        password: req.user.password,
-        firstName: req.user.firstName,
-        lastName: req.user.lastName,
-        profileImageUrl: req.user.profileImageUrl,
-        waiverSigned: req.user.waiverSigned,
-        isAdmin: true,
-        resetToken: req.user.resetToken,
-        resetTokenExpiry: req.user.resetTokenExpiry
-      });
-      
-      res.json({ message: "Successfully granted admin privileges", isAdmin: true });
-    } catch (error) {
-      console.error("Error making user admin:", error);
-      res.status(500).json({ message: "Failed to update admin status" });
-    }
-  });
 
   // Waiver routes
   app.post('/api/waivers', isAuthenticated, async (req: any, res) => {
