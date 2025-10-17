@@ -144,12 +144,12 @@ export default function Terms() {
                 </CardContent>
               </Card>
 
-              {/* Liability and Insurance */}
+              {/* Liability */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3">
                     <AlertTriangle className="h-5 w-5 text-primary" />
-                    5. Liability and Insurance
+                    5. Liability
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -163,12 +163,6 @@ export default function Terms() {
                     <h4 className="font-semibold text-foreground mb-2">5.2 User Liability</h4>
                     <p className="text-muted-foreground leading-relaxed">
                       You assume full responsibility for any injury, damage, or loss resulting from the use of rented equipment. You agree to indemnify and hold Peak Gear TO harmless from any claims arising from your use of our equipment.
-                    </p>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-foreground mb-2">5.3 Insurance Recommendations</h4>
-                    <p className="text-muted-foreground leading-relaxed">
-                      We strongly recommend checking with your auto insurance provider regarding coverage for rental equipment and any cargo being transported.
                     </p>
                   </div>
                 </CardContent>
@@ -248,9 +242,7 @@ export default function Terms() {
                   </p>
                   <div className="space-y-2 text-muted-foreground">
                     <p><strong>Peak Gear TO</strong></p>
-                    <p>Email: hello@peakgearto.com</p>
-                    <p>Phone: (416) 555-GEAR</p>
-                    <p>Address: Brampton, ON</p>
+                    <p>Email: <a href="mailto:info@peakgearto.com" className="text-primary hover:underline">info@peakgearto.com</a></p>
                   </div>
                 </CardContent>
               </Card>
