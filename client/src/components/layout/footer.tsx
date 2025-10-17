@@ -100,16 +100,10 @@ export default function Footer() {
             <h3 className="font-semibold text-card-foreground mb-4">Contact</h3>
             <div className="space-y-2 text-muted-foreground">
               <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-accent" />
-                <span data-testid="text-location">Brampton, ON</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Phone className="h-4 w-4 text-accent" />
-                <span data-testid="text-phone">(416) 555-GEAR</span>
-              </div>
-              <div className="flex items-center gap-2">
                 <Mail className="h-4 w-4 text-accent" />
-                <span data-testid="text-email">hello@peakgearto.com</span>
+                <a href="mailto:info@peakgearto.com" className="hover:text-accent transition-colors" data-testid="text-email">
+                  info@peakgearto.com
+                </a>
               </div>
             </div>
           </div>
