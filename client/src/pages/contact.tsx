@@ -57,20 +57,6 @@ export default function Contact() {
                 <h2 className="text-3xl font-bold text-foreground mb-8">Get in Touch</h2>
                 
                 <div className="space-y-6">
-                  {/* Phone */}
-                  <div className="flex items-start gap-4">
-                    <div className="bg-primary/10 p-3 rounded-lg">
-                      <Phone className="h-6 w-6 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-foreground mb-1">Phone</h3>
-                      <p className="text-muted-foreground">Call us for immediate assistance</p>
-                      <a href="tel:+14165551234" className="text-primary hover:underline font-medium">
-                        (416) 555-1234
-                      </a>
-                    </div>
-                  </div>
-
                   {/* Email */}
                   <div className="flex items-start gap-4">
                     <div className="bg-primary/10 p-3 rounded-lg">
@@ -82,21 +68,6 @@ export default function Contact() {
                       <a href="mailto:info@peakgearto.com" className="text-primary hover:underline font-medium">
                         info@peakgearto.com
                       </a>
-                    </div>
-                  </div>
-
-                  {/* Location */}
-                  <div className="flex items-start gap-4">
-                    <div className="bg-primary/10 p-3 rounded-lg">
-                      <MapPin className="h-6 w-6 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-foreground mb-1">Location</h3>
-                      <p className="text-muted-foreground">Visit our Brampton warehouse</p>
-                      <p className="text-foreground font-medium">
-                        123 Adventure Way<br />
-                        Brampton, ON L6T 1A1
-                      </p>
                     </div>
                   </div>
 
@@ -118,24 +89,24 @@ export default function Contact() {
 
                 {/* Quick Contact Options */}
                 <div className="mt-12 p-6 bg-card border border-border rounded-lg">
-                  <h3 className="font-semibold text-card-foreground mb-4">Quick Questions?</h3>
+                  <h3 className="font-semibold text-card-foreground mb-4">Need Help?</h3>
                   <div className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <MessageSquare className="h-4 w-4 text-primary" />
-                      <span className="text-sm text-muted-foreground">
-                        Check our FAQ section for instant answers
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Phone className="h-4 w-4 text-primary" />
-                      <span className="text-sm text-muted-foreground">
-                        Call for same-day rental availability
-                      </span>
-                    </div>
                     <div className="flex items-center gap-2">
                       <Mail className="h-4 w-4 text-primary" />
                       <span className="text-sm text-muted-foreground">
-                        Email for booking quotes and planning help
+                        Email us for booking quotes and planning help
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <MessageSquare className="h-4 w-4 text-primary" />
+                      <span className="text-sm text-muted-foreground">
+                        Use the contact form for detailed inquiries
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Clock className="h-4 w-4 text-primary" />
+                      <span className="text-sm text-muted-foreground">
+                        We respond within 24 hours during business hours
                       </span>
                     </div>
                   </div>
