@@ -44,15 +44,15 @@ export default function HeroSection() {
         <div className="mt-12 flex flex-wrap justify-center items-center gap-8 text-sm text-gray-200">
           <div className="flex items-center gap-2">
             <Shield className="h-5 w-5 text-accent" />
-            <span>Fully Insured</span>
+            <span>Quality Equipment</span>
           </div>
           <div className="flex items-center gap-2">
             <Truck className="h-5 w-5 text-accent" />
-            <span>Free Brampton Pickup</span>
+            <span>Free Pickup Available</span>
           </div>
           <div className="flex items-center gap-2">
             <Star className="h-5 w-5 text-accent" />
-            <span>500+ Happy Customers</span>
+            <span>GTA Wide Service</span>
           </div>
         </div>
       </div>

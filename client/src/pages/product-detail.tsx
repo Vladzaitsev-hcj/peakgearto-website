@@ -137,7 +137,7 @@ export default function ProductDetail() {
                   <div className="flex items-center gap-4 text-sm text-muted-foreground">
                     <div className="flex items-center gap-1">
                       <Shield className="h-4 w-4 text-accent" />
-                      <span>Fully Insured</span>
+                      <span>Quality Gear</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <Package className="h-4 w-4 text-accent" />
@@ -206,14 +206,7 @@ export default function ProductDetail() {
                           className="inline-flex items-center justify-center bg-accent hover:bg-accent/90 text-accent-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                           data-testid="button-compatibility-help"
                         >
-                          Get Compatibility Help
-                        </a>
-                        <a 
-                          href="tel:+14165556327" 
-                          className="inline-flex items-center justify-center border border-border hover:bg-muted text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-                          data-testid="button-call-compatibility"
-                        >
-                          Call (416) 555-GEAR
+                          Contact Us for Help
                         </a>
                       </div>
                     </div>

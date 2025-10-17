@@ -16,21 +16,21 @@ export default function Pricing() {
 
   const deliveryOptions = [
     {
-      name: "Pickup in Brampton",
+      name: "Pickup Option",
       price: "Free",
-      description: "Pick up and return at our Brampton warehouse",
+      description: "Pick up and return at our location",
       features: ["Free pickup and return", "Flexible timing", "Installation guidance"]
     },
     {
       name: "Standard Delivery",
       price: "$49.99",
-      description: "Delivery within 20km of Brampton",
+      description: "Delivery within local GTA area",
       features: ["Door-to-door service", "Same-day available", "Installation included"]
     },
     {
       name: "Extended Delivery", 
       price: "$89.99",
-      description: "Delivery 20-50km from Brampton",
+      description: "Delivery to extended GTA regions",
       features: ["Extended coverage area", "Scheduled delivery", "Full setup service"]
     }
   ];
@@ -201,8 +201,8 @@ export default function Pricing() {
                   <div className="flex items-start gap-3">
                     <Shield className="h-5 w-5 text-primary mt-0.5" />
                     <div>
-                      <h4 className="font-semibold text-foreground">Full Insurance Coverage</h4>
-                      <p className="text-sm text-muted-foreground">Comprehensive coverage for peace of mind</p>
+                      <h4 className="font-semibold text-foreground">Quality Equipment</h4>
+                      <p className="text-sm text-muted-foreground">Premium brands you can trust</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
@@ -215,8 +215,8 @@ export default function Pricing() {
                   <div className="flex items-start gap-3">
                     <Clock className="h-5 w-5 text-primary mt-0.5" />
                     <div>
-                      <h4 className="font-semibold text-foreground">24/7 Support</h4>
-                      <p className="text-sm text-muted-foreground">Help when you need it, even on weekends</p>
+                      <h4 className="font-semibold text-foreground">Responsive Support</h4>
+                      <p className="text-sm text-muted-foreground">Help during business hours when you need it</p>
                     </div>
                   </div>
                 </div>

@@ -56,7 +56,7 @@ export default function FAQ() {
       questions: [
         {
           question: "What areas do you deliver to?",
-          answer: "We offer free pickup from our Brampton warehouse. Standard delivery ($49.99) covers within 20km of Brampton, and extended delivery ($89.99) covers 20-50km. This includes most of the Greater Toronto Area."
+          answer: "We offer free pickup at our location. Standard delivery ($49.99) covers the local GTA area, and extended delivery ($89.99) covers wider GTA regions. Contact us to confirm delivery availability for your specific location."
         },
         {
           question: "How does delivery work?",
@@ -64,7 +64,7 @@ export default function FAQ() {
         },
         {
           question: "Can I pick up equipment myself?",
-          answer: "Yes! Pickup from our Brampton warehouse is always free. Our team will help load the equipment and show you how to install it properly."
+          answer: "Yes! Pickup is always free. Our team will help load the equipment and show you how to install it properly."
         },
         {
           question: "What if I need to return equipment early or late?",
@@ -99,8 +99,8 @@ export default function FAQ() {
       icon: <Shield className="h-5 w-5" />,
       questions: [
         {
-          question: "Is the equipment insured?",
-          answer: "Yes, all our equipment is covered by comprehensive insurance. However, renters are responsible for any damage or loss during the rental period, which is why we collect a security deposit."
+          question: "What about equipment damage or loss?",
+          answer: "Renters are responsible for any damage or loss during the rental period, which is why we collect a security deposit. We recommend checking with your auto insurance provider about coverage for rental equipment."
         },
         {
           question: "What happens if the equipment is damaged?",
@@ -134,7 +134,7 @@ export default function FAQ() {
         },
         {
           question: "What if I have a problem during my rental?",
-          answer: "We provide 24/7 support during your rental period. You can reach us by phone, email, or through our website chat. We're here to help ensure your adventure goes smoothly!"
+          answer: "We're here to help during business hours. You can reach us by email or through our website contact form. We respond quickly to ensure your adventure goes smoothly!"
         }
       ]
     }
@@ -216,17 +216,9 @@ export default function FAQ() {
               >
                 Contact Us
               </a>
-              <a 
-                href="tel:+14165556327" 
-                className="inline-flex items-center bg-accent hover:bg-accent/90 text-accent-foreground px-6 py-3 rounded-lg font-semibold transition-colors"
-                data-testid="button-call-us"
-              >
-                <Clock className="h-4 w-4 mr-2" />
-                Call (416) 555-GEAR
-              </a>
             </div>
             <p className="text-sm text-muted-foreground mt-4">
-              Available 7 days a week • 24/7 support during active rentals
+              We respond within 24 hours during business hours
             </p>
           </div>
         </section>

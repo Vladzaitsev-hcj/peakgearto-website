@@ -337,9 +337,7 @@ export default function Privacy() {
                   </p>
                   <div className="space-y-2 text-muted-foreground">
                     <p><strong>Peak Gear TO - Privacy Officer</strong></p>
-                    <p>Email: privacy@peakgearto.com</p>
-                    <p>Phone: (416) 555-GEAR</p>
-                    <p>Address: Brampton, ON, Canada</p>
+                    <p>Email: <a href="mailto:info@peakgearto.com" className="text-primary hover:underline">info@peakgearto.com</a></p>
                   </div>
                   <p className="text-muted-foreground leading-relaxed text-sm mt-4">
                     We will respond to your privacy-related inquiries within 30 days of receipt.
