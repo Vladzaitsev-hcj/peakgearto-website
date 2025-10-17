@@ -1,4 +1,4 @@
-import { ArrowRight, Shield, Truck, Star } from "lucide-react";
+import { Shield, Truck, Star } from "lucide-react";
 import { Link } from "wouter";
 
 export default function HeroSection() {
@@ -23,7 +23,6 @@ export default function HeroSection() {
           <Link href="/products">
             <button className="btn-primary px-8 py-4 rounded-lg font-semibold text-lg shadow-lg" data-testid="button-browse-gear">
               Browse Our Gear
-              <ArrowRight className="ml-2 h-5 w-5" />
             </button>
           </Link>
           <button 
