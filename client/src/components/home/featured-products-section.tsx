@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, Car, Bike, Star } from "lucide-react";
+import { Car, Bike, Star } from "lucide-react";
 import { Link } from "wouter";
 import type { Product } from "@shared/schema";
 
@@ -96,7 +96,6 @@ export default function FeaturedProductsSection() {
           <Link href="/products">
             <button className="btn-secondary px-8 py-3 rounded-lg font-semibold" data-testid="button-view-all-products">
               View All Products
-              <ArrowRight className="ml-2 h-5 w-5" />
             </button>
           </Link>
         </div>
