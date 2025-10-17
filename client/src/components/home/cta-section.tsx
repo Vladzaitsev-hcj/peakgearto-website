@@ -1,4 +1,3 @@
-import { ArrowRight } from "lucide-react";
 import { Link } from "wouter";
 
 export default function CTASection() {
@@ -19,7 +18,6 @@ export default function CTASection() {
           <Link href="/products">
             <button className="btn-primary px-8 py-4 rounded-lg font-semibold text-lg" data-testid="button-browse-all-products">
               Browse All Products
-              <ArrowRight className="ml-2 h-5 w-5" />
             </button>
           </Link>
           <button className="border-2 border-primary-foreground text-primary-foreground px-8 py-4 rounded-lg font-semibold text-lg hover:bg-primary-foreground hover:text-primary transition-all" data-testid="button-contact-us">
